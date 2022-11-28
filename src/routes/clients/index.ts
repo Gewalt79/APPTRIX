@@ -29,7 +29,7 @@ router.post('/create', upload.single('avatar'), async (request, response) => {
 });
 
 router.post(
-  '/:id/match',
+  '/match',
   (request, response, next) => {
     CheckAuth.check(request, response, next, 'MATCH');
   },

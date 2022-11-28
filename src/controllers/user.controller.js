@@ -32,10 +32,10 @@ class UserController {
     }
     static matchUser(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const receiver = new user_model_1.default();
-            receiver.id = parseInt(request.body.receiver.id);
+            const sender = new user_model_1.default(request.body.sender);
+            const receiver = new user_model_1.default(request.body.receiver);
             const userService = new user_service_1.default();
-            return response.send(yield userService.matchUsers(request.params.id, receiver.id));
+            return response.send(yield userService.matchUsers(sender, receiver));
         });
     }
 }

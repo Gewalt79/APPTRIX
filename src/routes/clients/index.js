@@ -32,7 +32,7 @@ router.get('/list', (request, response, next) => {
 router.post('/create', upload.single('avatar'), (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     yield user_controller_1.default.addUser(request, response);
 }));
-router.post('/:id/match', (request, response, next) => {
+router.post('/match', (request, response, next) => {
     checkToken_1.default.check(request, response, next, 'MATCH');
 }, (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     yield user_controller_1.default.matchUser(request, response);

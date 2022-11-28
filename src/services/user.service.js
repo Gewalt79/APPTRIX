@@ -16,6 +16,7 @@ const helper_1 = __importDefault(require("../db_pool/helper"));
 const helper_2 = __importDefault(require("../helpers/helper"));
 const crypto_1 = __importDefault(require("crypto"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const email_service_1 = __importDefault(require("../email/email.service"));
 class UserService {
     getAllUsers(filter, location) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -88,17 +89,28 @@ class UserService {
             }
         });
     }
-    matchUsers(senderID, receiverID, pool) {
+    matchUsers(sender, receiver, pool) {
         return __awaiter(this, void 0, void 0, function* () {
             if (pool === undefined)
                 pool = helper_1.default.pool();
             try {
-                const sql = `SELECT * FROM do_match(${senderID}, ${receiverID})`;
+                const sql = `SELECT * FROM do_match(${sender.id}, ${receiver.id})`;
                 const userResult = yield pool.aquery(sql, []);
+                if (userResult.rows[0].user_email !== 'false') {
+                    yield email_service_1.default.sendEmail(sender, receiver);
+                    return {
+                        success: true,
+                        data: {
+                            message: 'Это взаимно!',
+                            isMatch: true,
+                        },
+                    };
+                }
                 return {
                     success: true,
                     data: {
-                        user_email: userResult.rows[0],
+                        message: 'Не взаимно.',
+                        isMatch: false,
                     },
                 };
             }

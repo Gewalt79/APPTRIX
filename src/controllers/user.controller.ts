@@ -20,12 +20,12 @@ class UserController {
   }
 
   public static async matchUser(request, response) {
-    const receiver = new User();
-    receiver.id = parseInt(request.body.receiver.id);
+    const sender = new User(request.body.sender);
+    const receiver = new User(request.body.receiver);
 
     const userService: UserService = new UserService();
 
-    return response.send(await userService.matchUsers(request.params.id, receiver.id));
+    return response.send(await userService.matchUsers(sender, receiver));
   }
 }
 

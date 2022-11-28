@@ -4,6 +4,7 @@ import UtilHelper from '../helpers/helper';
 import PGPool from '../db_pool/pg_pool';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import EmailService from '../email/email.service';
 
 class UserService {
   public async getAllUsers(filter?, location?): Promise<any> {
@@ -98,17 +99,28 @@ class UserService {
     }
   }
 
-  public async matchUsers(senderID: number, receiverID: number, pool?: PGPool): Promise<any> {
+  public async matchUsers(sender: User, receiver: User, pool?: PGPool): Promise<any> {
     if (pool === undefined) pool = Helper.pool();
 
     try {
-      const sql = `SELECT * FROM do_match(${senderID}, ${receiverID})`;
+      const sql = `SELECT * FROM do_match(${sender.id}, ${receiver.id})`;
       const userResult = await pool.aquery(sql, []);
 
+      if (userResult.rows[0].user_email !== 'false') {
+        await EmailService.sendEmail( sender, receiver);
+        return {
+          success: true,
+          data: {
+            message: 'Это взаимно!',
+            isMatch: true,
+          },
+        };
+      }
       return {
         success: true,
         data: {
-          user_email: userResult.rows[0],
+          message: 'Не взаимно.',
+          isMatch: false,
         },
       };
     } catch (error) {
