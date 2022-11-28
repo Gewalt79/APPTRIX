@@ -14,28 +14,44 @@ API с использованием typescript, express
 * latitude - широта
 * longitude - долгота
 
+```json
+{
+    "success": true,
+    "data": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InMxMTEyMzhAeWFuZGV4LnJ1IiwicGVybWlzc2lvbnMiOlsiTUFUQ0giLCJSRUFEIl0sImxhdCI6IjYwLjAyNjc0ODUxOTIwMzA5NiIsImxvbiI6IjMwLjMxMTAxODA1MjE0ODkzNSIsImlhdCI6MTY2OTQxNDkyNCwiZXhwIjoxNjY5NTAxMzI0fQ.-khm6VSyDxXa0vTnedawqYZM40hSguVj8a5kQK5XrWA"
+    }
+}
+```
 
 Ответом после регистрации возвращается токен. Его используем при вызове match и при чтении списка пользователей.
 
 ## Получение списка пользователей
 
-> api/clients/list?filter=firstname
+> api/clients/list?filter=firstname - нужен токен
 
 Фильтры списка пользователей: filter=gender / firstname / lastname / 100 последнее это максимальное расстояние в метрах от пользователей.
 
 ## Match пользователей
 
-> api/clients/6/match  6 - Это пользователь который лайкает
+> api/clients/match - нужен токен
 
-Передаем сначала id пользователя который лайкает, потом передаем id пользователя которого лайкают.
-В случае если это взаимно возвращает email пользователя которого лайкнули
-
+В зависимости от бизнес логики можно отправлять только id и на сервере уже доставать почту первого и второго пользователя,
+ради "оптимизации" я данные которые приходят с клиента сразу же и использую
 
 тело: 
 ```json
 {
+    "sender": {
+        "id": "1",
+        "firstName": "aaaadfg",
+        "lastName": "bbbbb",
+        "email": "tererer@gmail.COM"
+    },
     "receiver": {
-        "id": "13" 13 - Это id пользователя которого лайкнули
+        "id": "15",
+        "firstName": "Сережа",
+        "lastName": "Печорин",
+        "email": "s111238@yandex.ru"
     }
 }
 ```
@@ -44,15 +60,10 @@ API с использованием typescript, express
 {
     "success": true,
     "data": {
-        "user_email": {
-            "ret": "s111238@yandex.ru"   - почта человека которого лайкнули
-        }
+        "message": "Это взаимно!",
+        "isMatch": true - true если взаимно false если не взаимно
     }
 }
 ```
-
-### Чего нет?
-- Валидации данных
-- Отправки сообщения на почту пользователям
 
 ![image](https://user-images.githubusercontent.com/89931949/203987511-1400db83-56d8-48d9-9cd9-e2aad6f467ce.png)
