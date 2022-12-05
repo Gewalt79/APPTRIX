@@ -65,5 +65,3 @@ API с использованием typescript, express
     }
 }
 ```
-
-![image](https://user-images.githubusercontent.com/89931949/203987511-1400db83-56d8-48d9-9cd9-e2aad6f467ce.png)
